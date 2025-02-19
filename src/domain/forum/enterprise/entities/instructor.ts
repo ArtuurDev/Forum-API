@@ -1,4 +1,4 @@
-import { Entity } from "@/core/entity/entity"
+import { Entity } from "../../../../core/entity/entity"
 
 
 interface InstructorProps {

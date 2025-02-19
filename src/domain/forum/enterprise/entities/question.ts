@@ -1,8 +1,8 @@
 import { Slug } from "./value-objects/slug"
-import { Entity } from "@/core/entity/entity"
-import { UniqueEntityID } from "../../core/entity/unique-entity-id"
-import { Optional } from "@/core/types/optional"
 import dayjs from "dayjs"
+import { UniqueEntityID } from "../../../../core/entity/unique-entity-id"
+import { Entity } from "../../../../core/entity/entity"
+import { Optional } from "../../../../core/types/optional"
 
 
 interface QuestionProps {
@@ -53,13 +53,13 @@ export class Question extends Entity<QuestionProps> {
         this.props.updatedAt = new Date()
     }
 
-    static create(props: Optional<QuestionProps, 'createdAt' | 'slug' >, id: UniqueEntityID) {
+    static create(props: Optional<QuestionProps, 'createdAt' | 'slug' >, id?: UniqueEntityID) {
 
         const question = new Question({
             ...props,
             slug: props.slug ?? Slug.createFromText(props.title),
             createdAt: new Date()
-        }, id)
+        }, id ?? new UniqueEntityID())
 
         return question
 
