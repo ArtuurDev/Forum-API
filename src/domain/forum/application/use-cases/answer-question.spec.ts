@@ -25,6 +25,7 @@ describe('', ()=>{
         })
     
         expect(answer.content).toEqual('Nova resposta')
+        expect(inMemoryAnswerRepository.items[0]).toEqual(answer)
     
     })
 
