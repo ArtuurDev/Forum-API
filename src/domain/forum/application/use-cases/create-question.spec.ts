@@ -26,6 +26,7 @@ describe('Create question', () => {
         })
     
         expect(question.id).toBeTruthy()
+        expect(inMemoryQuestionRepository.items[0]).toEqual(question)
     
     })
 
