@@ -5,7 +5,7 @@ import { Entity } from "../../../../core/entity/entity"
 import { Optional } from "../../../../core/types/optional"
 
 
-interface QuestionProps {
+export interface QuestionProps {
 
     title: string
     content: string
@@ -33,6 +33,11 @@ export class Question extends Entity<QuestionProps> {
 
     get bestAnswerId() {
         return this.props.bestAnswerId
+    }
+
+
+    get slug() {
+        return this.props.slug
     }
 
     set title(title: string) {
