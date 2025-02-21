@@ -12,5 +12,20 @@ export class InMemoryAnswerRepository implements AnswerRepository {
 
     }
 
+    async findById(id: string) {
+        
+        const question = this.items.find(item => item.id.valueId === id)
+
+        return question
+
+    }
+
+    async delete(answer: Answer) {
+        
+        const index = this.items.findIndex(item => item.id.valueId === answer.id.valueId) 
+
+        this.items.splice(index, 1)
+
+    }
 
 }
