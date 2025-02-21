@@ -23,8 +23,6 @@ describe('Delete Answer', () => {
         
         inMemoryAnswerRepository.create(newAnswer)
 
-        console.log(inMemoryAnswerRepository.items)
-
        await sut.execute({
             id: newAnswer.id.valueId,
             authorId: newAnswer.authorId.valueId
@@ -39,8 +37,6 @@ describe('Delete Answer', () => {
 
         const newAnswer = await makeAnswer()
         inMemoryAnswerRepository.create(newAnswer)
-
-        console.log(inMemoryAnswerRepository.items)
 
        expect(async () => {
         await sut.execute({

@@ -24,8 +24,6 @@ describe('Edit question', () => {
         })
         inMemoryQuestionRepository.create(newQuestion)
 
-        console.log(inMemoryQuestionRepository.items)
-
        await sut.execute(
         {
             authorId: newQuestion.authorId.valueId,
@@ -34,7 +32,6 @@ describe('Edit question', () => {
             title: 'novo titlee'
         }
        )
-        console.log('AA',inMemoryQuestionRepository.items)
         expect(inMemoryQuestionRepository.items[0]).toEqual(newQuestion)
     
     })
@@ -46,8 +43,6 @@ describe('Edit question', () => {
             title: 'primeira-question'
         })
         inMemoryQuestionRepository.create(newQuestion)
-
-        console.log(inMemoryQuestionRepository.items)
 
        expect(async () => {
         await sut.execute({

@@ -23,8 +23,6 @@ describe('Create question', () => {
         })
         inMemoryQuestionRepository.create(newQuestion)
 
-        console.log(inMemoryQuestionRepository.items)
-
        const {question} = await sut.execute({
             slug: 'primeira-question'
         })
