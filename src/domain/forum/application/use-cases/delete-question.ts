@@ -3,6 +3,7 @@ import { QuestionsRepository } from "../repositories/questions-repositories";
 interface DeleteQuestionRequest {
 
     id: string
+    authorId: string
 
 }
 
@@ -14,9 +15,9 @@ export class DeleteQuestionUseCase {
 
 
 
-    async execute({id}: DeleteQuestionRequest) {
+    async execute({id, authorId}: DeleteQuestionRequest) {
         
-        const question = await this.repository.findById(id)
+        const question = await this.repository.findById(id,authorId)
         
         if(!question) {
             throw new Error('Esse Id não existe')

@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it } from "vitest"
-import { DeleteQuestionUseCase } from "./delete-question"
 import { InMemoryQuestionRepository } from "../../../../../test/repositories/in-memory-questions-repository"
 import { makeQuestion } from "../../../../../test/factories/make-question"
-import { rejects } from "assert"
+import { EditQuestionUseCase } from "./edit-question"
+import { Console } from "console"
 
-describe('Delete question', () => {
+describe('Edit question', () => {
     
     let inMemoryQuestionRepository: InMemoryQuestionRepository
-    let sut: DeleteQuestionUseCase
+    let sut: EditQuestionUseCase
 
     beforeEach(()=>{
 
         inMemoryQuestionRepository = new InMemoryQuestionRepository()
-        sut = new DeleteQuestionUseCase(inMemoryQuestionRepository)
+        sut = new EditQuestionUseCase(inMemoryQuestionRepository)
 
     })
 
@@ -26,17 +26,21 @@ describe('Delete question', () => {
 
         console.log(inMemoryQuestionRepository.items)
 
-       await sut.execute({
+       await sut.execute(
+        {
+            authorId: newQuestion.authorId.valueId,
+            content: 'Novo conteudoo',
             id: newQuestion.id.valueId,
-            authorId: newQuestion.authorId.valueId
-        })
-        
-        expect(inMemoryQuestionRepository.items).length(0)
+            title: 'novo titlee'
+        }
+       )
+        console.log('AA',inMemoryQuestionRepository.items)
+        expect(inMemoryQuestionRepository.items[0]).toEqual(newQuestion)
     
     })
 
 
-    it('Should not be possible to delete a question with the wrong id ', async () => {
+    it('Should not be possible to edit a question with the wrong id ', async () => {
 
         const newQuestion = makeQuestion({
             title: 'primeira-question'
@@ -47,8 +51,10 @@ describe('Delete question', () => {
 
        expect(async () => {
         await sut.execute({
-            id: '12233',
-            authorId: 'ed'
+            authorId: 'lm',
+            id: ', f',
+            content: 'm',
+            title: 'çlm'
         })
        }).rejects.toBeInstanceOf(Error)
         

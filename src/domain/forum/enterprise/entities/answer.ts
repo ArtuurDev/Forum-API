@@ -22,6 +22,10 @@ export class Answer extends Entity<AnswerProps> {
         return this.content.substring(0,120).trimEnd().concat('...')
     }
 
+    get authorId(){
+        return this.props.authorId
+    }
+
     static create(props: Optional<AnswerProps, 'createdAt'>, id?: UniqueEntityID) {
 
         const answer = new Answer({...props,

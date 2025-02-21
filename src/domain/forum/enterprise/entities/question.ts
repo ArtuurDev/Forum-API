@@ -24,6 +24,14 @@ export class Question extends Entity<QuestionProps> {
         return this.props.createdAt
     }
 
+    get authorId() {
+        return this.props.authorId
+    }
+
+    get content() {
+        return this.props.content
+    }
+
     get isNew(): boolean {
 
         return dayjs().diff(this.createdAt, 'days') <= 3 
@@ -48,6 +56,10 @@ export class Question extends Entity<QuestionProps> {
         
     }
 
+    set content(content: string) {
+
+        this.props.content = content
+    }
 
     set bestAnswerId(bestAnswerId: UniqueEntityID | undefined) {
         this.props.bestAnswerId = bestAnswerId

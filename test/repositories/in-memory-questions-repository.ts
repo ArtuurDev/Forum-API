@@ -1,4 +1,5 @@
 import { QuestionsRepository } from "../../src/domain/forum/application/repositories/questions-repositories";
+import { EditQuestionRequest } from "../../src/domain/forum/application/use-cases/edit-question";
 import { Question } from "../../src/domain/forum/enterprise/entities/question";
 
 export class InMemoryQuestionRepository implements QuestionsRepository {
@@ -24,9 +25,9 @@ export class InMemoryQuestionRepository implements QuestionsRepository {
 
     }
 
-    async findById(id: string) {
+    async findById(id: string, authorId: string) {
         
-        const question = this.items.find(item => item.id.valueId === id)
+        const question = this.items.find(item => item.id.valueId === id && item.authorId.valueId === authorId)
 
         return question
 
@@ -40,5 +41,10 @@ export class InMemoryQuestionRepository implements QuestionsRepository {
 
     }
 
+    async save(question: Question) {
 
+        const index = this.items.findIndex(item => item.id.valueId === question.id.valueId)
+
+        return this.items[index] = question
+}
 }

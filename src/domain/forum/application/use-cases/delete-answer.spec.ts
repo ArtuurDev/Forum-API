@@ -26,7 +26,8 @@ describe('Delete Answer', () => {
         console.log(inMemoryAnswerRepository.items)
 
        await sut.execute({
-            id: newAnswer.id.valueId
+            id: newAnswer.id.valueId,
+            authorId: newAnswer.authorId.valueId
         })
         
         expect(inMemoryAnswerRepository.items).length(0)
@@ -43,7 +44,8 @@ describe('Delete Answer', () => {
 
        expect(async () => {
         await sut.execute({
-            id: '12233'
+            id: '12233',
+            authorId: 'snf'
         })
        }).rejects.toBeInstanceOf(Error)
         
