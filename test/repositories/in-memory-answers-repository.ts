@@ -28,4 +28,13 @@ export class InMemoryAnswerRepository implements AnswerRepository {
 
     }
 
+
+    async save(answer: Answer) {
+
+        const index = this.items.findIndex(item => item.id.valueId === answer.id.valueId) 
+
+        return this.items[index] = answer
+
+    }    
+
 }
