@@ -14,11 +14,9 @@ export interface QuestionProps {
     slug: Slug
     createdAt: Date
     updatedAt?: Date
-
 }
 
 export class Question extends Entity<QuestionProps> {
-
 
     get createdAt() {
         return this.props.createdAt
@@ -35,14 +33,11 @@ export class Question extends Entity<QuestionProps> {
     get isNew(): boolean {
 
         return dayjs().diff(this.createdAt, 'days') <= 3 
-
     }
-
 
     get bestAnswerId() {
         return this.props.bestAnswerId
     }
-
 
     get slug() {
         return this.props.slug
@@ -53,9 +48,7 @@ export class Question extends Entity<QuestionProps> {
         this.props.title = title
         this.props.slug = Slug.createFromText(title)
         this.touch()
-        
     }
-
     set content(content: string) {
 
         this.props.content = content
@@ -79,7 +72,6 @@ export class Question extends Entity<QuestionProps> {
         }, id ?? new UniqueEntityID())
 
         return question
-
     }
 
 }
