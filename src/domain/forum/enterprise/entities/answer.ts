@@ -22,6 +22,10 @@ export class Answer extends Entity<AnswerProps> {
         this.touch()
     }
 
+    get questionId() {
+        return this.props.questionId
+    }
+
     get excerpt() {
         return this.content.substring(0,120).trimEnd().concat('...')
     }

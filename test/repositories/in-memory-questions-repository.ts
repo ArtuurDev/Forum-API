@@ -25,9 +25,9 @@ export class InMemoryQuestionRepository implements QuestionsRepository {
 
     }
 
-    async findById(id: string, authorId: string) {
+    async findById(id: string) {
         
-        const question = this.items.find(item => item.id.valueId === id && item.authorId.valueId === authorId)
+        const question = this.items.find(item => item.id.valueId === id)
 
         return question
 
