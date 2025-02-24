@@ -1,5 +1,5 @@
+import { PaginationParams } from "../../src/core/repositories/paginations-params";
 import { QuestionsRepository } from "../../src/domain/forum/application/repositories/questions-repositories";
-import { EditQuestionRequest } from "../../src/domain/forum/application/use-cases/edit-question";
 import { Question } from "../../src/domain/forum/enterprise/entities/question";
 
 export class InMemoryQuestionRepository implements QuestionsRepository {
@@ -46,5 +46,14 @@ export class InMemoryQuestionRepository implements QuestionsRepository {
         const index = this.items.findIndex(item => item.id.valueId === question.id.valueId)
 
         return this.items[index] = question
-}
+    }
+
+    async findManyRecent({page}: PaginationParams) {
+        
+        const questions = this.items
+        .sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime()).slice((page -1) * 20, page *20 )
+
+        return questions
+
+    }
 }
