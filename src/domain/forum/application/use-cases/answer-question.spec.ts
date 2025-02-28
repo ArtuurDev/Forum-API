@@ -2,12 +2,12 @@ import {beforeEach, describe, expect, it, } from 'vitest'
 import { AnswerQuestionUseCase } from './answer-question'
 import { InMemoryAnswerRepository } from '../../../../../test/repositories/in-memory-answers-repository'
 
-describe('', ()=>{
+describe('', () =>{
 
     let inMemoryAnswerRepository: InMemoryAnswerRepository
     let sut: AnswerQuestionUseCase
 
-    beforeEach(()=>{
+    beforeEach(() => {
 
         inMemoryAnswerRepository = new InMemoryAnswerRepository()
         sut = new AnswerQuestionUseCase(inMemoryAnswerRepository)
@@ -16,17 +16,15 @@ describe('', ()=>{
 
     it('Create an answer', async () => {
 
-    
-        const {answer} = await sut.execute({
+        const result = await sut.execute({
             content: 'Nova resposta',
             authorId: '1',
             questionId: '1',
-    
         })
-    
-        expect(answer.content).toEqual('Nova resposta')
-        expect(inMemoryAnswerRepository.items[0]).toEqual(answer)
-    
+
+        expect(result.isRight()).toBe(true)
+        expect(inMemoryAnswerRepository.items[0]).toEqual(result.value.answer)    
+        expect(inMemoryAnswerRepository.items).toHaveLength(1)    
     })
 
 })
