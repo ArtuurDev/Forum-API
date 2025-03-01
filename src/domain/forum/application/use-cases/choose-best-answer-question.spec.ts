@@ -4,6 +4,7 @@ import { ChooseBestAnswerQuestion } from "./choose-best-answer-question";
 import { InMemoryAnswerRepository } from "../../../../../test/repositories/in-memory-answers-repository";
 import { makeQuestion } from "../../../../../test/factories/make-question";
 import { makeAnswer } from "../../../../../test/factories/make-answer";
+import { AnswerNotFound } from "./errors/answer-not-found";
 
 describe('tests to add the best question', () => {
 
@@ -22,31 +23,35 @@ describe('tests to add the best question', () => {
 
         const question = makeQuestion()
         inMemoryQuestionRepository.create(question)
+
         const answer = await makeAnswer({questionId: question.id})
         inMemoryAnswerRepository.create(answer)
 
-        const bestAnswer = await sut.execute({
+        const result = await sut.execute({
             answerId: answer.id.valueId,
             authorId: question.authorId.valueId
         })
 
-        expect(inMemoryQuestionRepository.items[0]).toEqual(bestAnswer.question)
+        expect(result.isRight()).toBe(true)
+        expect(inMemoryQuestionRepository.items[0]).toEqual(result.value.question)
 
     })
 
-    it('it should not be possible to add the best answer to the question in incorrect credentials', async ()=> {
+    it('it should not be possible to add the best answer id incorretly', async () => {
         const question = makeQuestion()
         inMemoryQuestionRepository.create(question)
+
         const answer = await makeAnswer()
         inMemoryAnswerRepository.create(answer)
 
-        expect(async () => {
-            await sut.execute({
-                answerId: 'incorreto id',
-                authorId: question.authorId.valueId
-            })
-        }).rejects.toBeInstanceOf(Error)
+        const result = await sut.execute({
+            answerId: 'incorreto id',
+            authorId: question.authorId.valueId
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(AnswerNotFound)
+
+    })
         
     })
-
-})
