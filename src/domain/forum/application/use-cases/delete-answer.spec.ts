@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { DeleteAnswerUseCase } from "./delete-answer"
 import { InMemoryAnswerRepository } from "../../../../../test/repositories/in-memory-answers-repository"
 import { makeAnswer } from "../../../../../test/factories/make-answer"
-import { NotAllowed } from "./errors/not-allowed"
 import { AnswerNotFound } from "./errors/answer-not-found"
 
 
