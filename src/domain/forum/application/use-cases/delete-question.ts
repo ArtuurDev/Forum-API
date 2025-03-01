@@ -1,29 +1,40 @@
-import { QuestionsRepository } from "../repositories/questions-repositories";
+import { Either, left, right } from "../../../../core/either"
+import { Question } from "../../enterprise/entities/question"
+import { QuestionsRepository } from "../repositories/questions-repositories"
+import { NotAllowed } from "./errors/not-allowed"
+import { QuestionNotFound } from "./errors/question-not-found"
 
-interface DeleteQuestionRequest {
-
-    id: string
+interface DeleteQuestionUseCaseRequest {
+    questionId: string
     authorId: string
-
 }
+
+
+type DeleteQuestionUseCaseResponse = Either<NotAllowed | QuestionNotFound, Question> 
 
 export class DeleteQuestionUseCase {
 
+    constructor(
+        private readonly questionRepository: QuestionsRepository
+    ) {}
 
-    constructor(private readonly repository: QuestionsRepository) {
-    }
+    async execute({questionId,authorId}: DeleteQuestionUseCaseRequest): Promise<DeleteQuestionUseCaseResponse> {
 
+        const question = await this.questionRepository.findById(questionId)
 
-
-    async execute({id, authorId}: DeleteQuestionRequest) {
-        
-        const question = await this.repository.findById(id,authorId)
-        
         if(!question) {
-            throw new Error('Esse Id não existe')
+            return left(new QuestionNotFound())
         }
 
-        return this.repository.delete(question) 
+        if(question.authorId.valueId !== authorId) {
+            return left(new NotAllowed())
+        }
+
+        this.questionRepository.delete(question)
+
+        return right({
+            question
+        })
     }
 
-}
+} 
