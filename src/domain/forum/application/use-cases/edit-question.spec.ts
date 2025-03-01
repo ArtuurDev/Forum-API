@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { InMemoryQuestionRepository } from "../../../../../test/repositories/in-memory-questions-repository"
 import { makeQuestion } from "../../../../../test/factories/make-question"
 import { EditQuestionUseCase } from "./edit-question"
-import { Console } from "console"
+import { QuestionNotFound } from "./errors/question-not-found"
 
 describe('Edit question', () => {
     
@@ -13,49 +13,48 @@ describe('Edit question', () => {
 
         inMemoryQuestionRepository = new InMemoryQuestionRepository()
         sut = new EditQuestionUseCase(inMemoryQuestionRepository)
-
     })
 
-
-    it('Find question by slug', async () => {
+    it('Edit question by Id', async () => {
 
         const newQuestion = makeQuestion({
             title: 'primeira-question'
         })
         inMemoryQuestionRepository.create(newQuestion)
 
-       await sut.execute(
+       const result = await sut.execute(
         {
             authorId: newQuestion.authorId.valueId,
             content: 'Novo conteudoo',
-            id: newQuestion.id.valueId,
+            questionId: newQuestion.id.valueId,
             title: 'novo titlee'
-        }
-       )
-        expect(inMemoryQuestionRepository.items[0]).toEqual(newQuestion)
-    
-    })
+        })
 
+        expect(result.isRight()).toBe(true)
+        expect(inMemoryQuestionRepository.items[0]).toEqual(
+            expect.objectContaining({
+                content: 'Novo conteudoo',
+        }))
+    })
 
     it('Should not be possible to edit a question with the wrong id ', async () => {
 
         const newQuestion = makeQuestion({
             title: 'primeira-question'
         })
+
         inMemoryQuestionRepository.create(newQuestion)
 
-       expect(async () => {
-        await sut.execute({
+        const result = await sut.execute({
             authorId: 'lm',
-            id: ', f',
+            questionId:'f',
             content: 'm',
             title: 'çlm'
         })
-       }).rejects.toBeInstanceOf(Error)
-        
-            
+         
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(QuestionNotFound)
+
     })
-
-
 
 })
