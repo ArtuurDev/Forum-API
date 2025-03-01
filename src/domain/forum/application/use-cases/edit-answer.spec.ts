@@ -2,6 +2,7 @@ import { describe, beforeEach, it, expect } from "vitest";
 import { EditAnswerUseCase } from "./edit-answer";
 import { InMemoryAnswerRepository } from "../../../../../test/repositories/in-memory-answers-repository";
 import { makeAnswer } from "../../../../../test/factories/make-answer";
+import { AnswerNotFound } from "./errors/answer-not-found";
 
 describe('Edit answer',() => {
     let inMemoryAnswerRepository: InMemoryAnswerRepository
@@ -18,29 +19,32 @@ describe('Edit answer',() => {
         const answer = await makeAnswer()
         inMemoryAnswerRepository.create(answer)
 
-        await sut.execute({
+        const result = await sut.execute({
             authorId: answer.authorId.valueId,
             content: 'edit of content',
-            id: answer.id.valueId
+            answerId: answer.id.valueId
         })
 
-        expect(answer.content).toEqual('edit of content')
+        expect(result.isRight()).toBe(true)
+        expect(inMemoryAnswerRepository.items[0]).toEqual(
+            expect.objectContaining({
+            content: 'edit of content'
+        }))
     })
 
-    it('should be able not edit answer to in incorrectly credentials', async ()=> {
+    it('should be able not edit answer to in incorrectly id', async ()=> {
 
         const answer = await makeAnswer()
         inMemoryAnswerRepository.create(answer)
 
-        expect(async () => {
+        const result = await sut.execute({
+            authorId: 'id incorreto',
+            content: 'possivel edit de contúdo',
+            answerId: 'id incorreto'
+        })
 
-            await sut.execute({
-                authorId: 'id incorreto',
-                content: 'possivel edit de contúdo',
-                id: 'id incorreto'
-            })
-
-        }).rejects.toBeInstanceOf(Error)
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(AnswerNotFound)
 
     })
 
