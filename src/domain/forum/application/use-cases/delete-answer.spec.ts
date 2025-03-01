@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { DeleteAnswerUseCase } from "./delete-answer"
 import { InMemoryAnswerRepository } from "../../../../../test/repositories/in-memory-answers-repository"
 import { makeAnswer } from "../../../../../test/factories/make-answer"
+import { NotAllowed } from "./errors/not-allowed"
+import { AnswerNotFound } from "./errors/answer-not-found"
 
 
 describe('Delete Answer', () => {
@@ -10,25 +12,24 @@ describe('Delete Answer', () => {
     let sut: DeleteAnswerUseCase
 
     beforeEach(()=>{
-
         inMemoryAnswerRepository = new InMemoryAnswerRepository()
         sut = new DeleteAnswerUseCase(inMemoryAnswerRepository)
-
     })
 
 
-    it('Find Answer by slug', async () => {
+    it('Delete Answer by id', async () => {
 
         const newAnswer = await makeAnswer()
         
         inMemoryAnswerRepository.create(newAnswer)
 
-       await sut.execute({
-            id: newAnswer.id.valueId,
+       const result = await sut.execute({
+            answerId: newAnswer.id.valueId,
             authorId: newAnswer.authorId.valueId
         })
         
-        expect(inMemoryAnswerRepository.items).length(0)
+        expect(result.isRight()).toBe(true)
+        expect(inMemoryAnswerRepository.items).toHaveLength(0)
     
     })
 
@@ -38,14 +39,14 @@ describe('Delete Answer', () => {
         const newAnswer = await makeAnswer()
         inMemoryAnswerRepository.create(newAnswer)
 
-       expect(async () => {
-        await sut.execute({
-            id: '12233',
-            authorId: 'snf'
-        })
-       }).rejects.toBeInstanceOf(Error)
-        
-            
+       const result = await sut.execute({
+        answerId: '12233',
+        authorId: 'snf'
+    })
+    
+       expect(result.isLeft()).toBe(true) 
+       expect(result.value).toBeInstanceOf(AnswerNotFound)
+
     })
 
 

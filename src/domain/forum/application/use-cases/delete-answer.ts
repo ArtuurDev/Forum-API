@@ -1,8 +1,10 @@
 import { Either, left, right } from "../../../../core/either"
 import { AnswerRepository } from "../repositories/answers-repository"
+import { AnswerNotFound } from "./errors/answer-not-found"
+import { NotAllowed } from "./errors/not-allowed"
 
 interface DeleteAnswerRequest {
-    id: string
+    answerId: string
     authorId: string
 }
 
@@ -14,18 +16,22 @@ export class DeleteAnswerUseCase {
         private readonly repository: AnswerRepository
     ) {}
 
-    async execute({id, authorId}: DeleteAnswerRequest): Promise<DeleteAnswerUseCaseResponse> {
+    async execute({answerId, authorId}: DeleteAnswerRequest): Promise<DeleteAnswerUseCaseResponse> {
         
-        const answer = await this.repository.findById(id)
+        const answer = await this.repository.findById(answerId)
         
         if(!answer) {
-            return left('ID inválido') 
+            return left(new AnswerNotFound()) 
         }
 
         if(answer.authorId.valueId !== authorId) {
-            return left('Not alowed')
+            return left(new NotAllowed())
         }
-        return right({})
+        this.repository.delete(answer)
+        
+        return right({
+
+        })
     }
 
 }
